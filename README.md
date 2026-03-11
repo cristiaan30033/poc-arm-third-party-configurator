@@ -80,11 +80,6 @@ Before writing a single line of LWC code, there are three setup steps that must 
 
 ![image6](media/image6.png)
 
-> [!TIP]
-> **Flow variable wiring**
-> 
-> Your custom LWC FlowScreen must declare `@api` properties matching the flow variable names. At minimum: `S01_ProductConfiguratorId` (the active configurator instance ID) and `S01_ProductConfigurationId` (the product configuration record ID). These are passed in by the Data Manager component that runs earlier in the same screen.
-
 ### 1.2 Create a Product Configuration Flow Record
 A Product Configuration Flow record is the bridge between a flow template and the products it applies to.
 
@@ -257,85 +252,6 @@ The most durable output of this PoC is `utils.js` — a dedicated ES module that
 - **Payload builders** — pure functions that take domain objects (`item`, `groupNode`) and return the correctly shaped API payload, keeping that logic out of component controllers.
 - **`isApiInProgress` flag management** — a simple boolean passed down to all child components to disable interactive controls while any API call is in flight, preventing race conditions on concurrent user actions.
 
-```javascript
-// utils.js — example: addNodes helper
-
-export async function addNodes(instanceId, nodes) {
-  const response = await fetch(
-    '/services/apexrest/commerce/ui/v1/products/configuration/addNodes',
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ instanceId, nodes })
-    }
-  );
-
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message || 'addNodes failed');
-  }
-
-  return response.json(); // returns updated instance state
-}
-
-// utils.js — example: deleteNodes helper
-
-export async function deleteNodes(instanceId, nodeIds) {
-  const response = await fetch(
-    '/services/apexrest/commerce/ui/v1/products/configuration/deleteNodes',
-    {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ instanceId, nodeIds })
-    }
-  );
-
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message || 'deleteNodes failed');
-  }
-
-  return response.json();
-}
-```
-
-The parent component's event handlers then become very clean:
-
-```javascript
-// customProdConfigOptionGroup.js — handleAddItem & handleRemoveRow
-
-async handleAddItem(event) {
-  const item = event.detail;
-  this._isApiInProgress = true;
-
-  try {
-    const payload = buildAddNodePayload(item, this._instanceId, this._parentNodeId);
-    const updatedInstance = await addNodes(this._instanceId, [payload]);
-    this._groups = parseGroupsFromInstance(updatedInstance);
-  } catch (err) {
-    this._errorMessage = err.message;
-  } finally {
-    this._isApiInProgress = false;
-  }
-}
-
-async handleRemoveRow(event) {
-  const { productKey } = event.detail;
-  const nodeId = this._nodeMap.get(productKey);
-  this._isApiInProgress = true;
-
-  try {
-    const updatedInstance = await deleteNodes(this._instanceId, [nodeId]);
-    this._groups = parseGroupsFromInstance(updatedInstance);
-  } catch (err) {
-    this._errorMessage = err.message;
-  } finally {
-    this._isApiInProgress = false;
-  }
-}
-```
-
----
 
 ## 🏆 Best Practices & Lessons Learned
 
