@@ -1,0 +1,232 @@
+<template>
+    <!--
+        CustomProdConfigOptionGroup
+        Renders option groups in either "tabs" or "accordion" display mode.
+        Display mode is driven by the parent via the displayMode @api property.
+    -->
+
+    <!-- TABS display mode -->
+    <template if:true={isTabsView}>
+        <lightning-tabset>
+            <template for:each={groups} for:item="group">
+                <lightning-tab
+                    key={group.id}
+                    value={group.id}
+                    label={group.label}
+                >
+                    <template if:true={group.isRendered}>
+                        <div class="group-content">
+
+                            <!-- Case 1 & 2: direct options list belonging to this group -->
+                            <template if:false={group.isContainer}>
+
+                                <!-- Add button — visible only for Case 2 (classification groups) -->
+                                <template if:true={group.showAddButton}>
+                                    <div class="group-actions slds-var-m-bottom_small">
+                                        <lightning-button
+                                            variant="neutral"
+                                            label={group.addButtonLabel}
+                                            title={group.addButtonLabel}
+                                            data-group-id={group.id}
+                                            class="slds-var-m-right_x-small"
+                                            onclick={handleShowModal}>
+                                        </lightning-button>
+                                    </div>
+                                    <template if:true={showModal}>
+                                        <c-custom-pcog-modal
+                                            products={modalProducts}
+                                            onclosemodal={handleCloseModal}
+                                            onadditems={handleAddItems}>
+                                        </c-custom-pcog-modal>
+                                    </template>
+                                </template>
+
+                                <!-- Option items list -->
+                                <template for:each={group.options} for:item="option">
+                                    <c-custom-pcog-item
+                                        key={option.id}
+                                        item={option}
+                                        is-api-in-progress={_isApiInProgress}
+                                        onadditem={handleAddItem}
+                                        onremoveitem={handleRemoveRow}
+                                        onconfigure={handleConfigureRow}
+                                        oneditproductname={handleEditProductName}
+                                        onpurchasingoptionchange={handlePurchasingOptionChange}
+                                        onquantitychange={handleQuantityChange}
+                                        ontoggleexpand={handleToggleExpand}>
+                                    </c-custom-pcog-item>
+                                </template>
+
+                                <!-- Empty state when the group has no options yet -->
+                                <template if:true={group.isEmpty}>
+                                    <div class="slds-align_absolute-center slds-p-around_medium">
+                                        <p class="slds-text-color_weak">{group.emptyStateMessage}</p>
+                                    </div>
+                                </template>
+
+                            </template>
+
+                            <!-- Case 3: container group — renders each child simple group
+                                 with its own collapsible sub-header and options list. -->
+                            <template if:true={group.isContainer}>
+                                <template for:each={group.childGroups} for:item="childGroup">
+                                    <div key={childGroup.id} class="child-group-section slds-var-m-bottom_medium">
+                                        <!-- Collapsible child group header -->
+                                        <div class="child-group-header slds-var-m-bottom_small"
+                                             data-group-id={childGroup.id}
+                                             onclick={handleToggleChildGroup}>
+                                            <lightning-icon
+                                                icon-name={childGroup.toggleIcon}
+                                                size="x-small"
+                                                class="child-group-toggle-icon">
+                                            </lightning-icon>
+                                            <h3 class="slds-text-heading_small child-group-label">
+                                                {childGroup.label}
+                                            </h3>
+                                        </div>
+                                        <!-- Child group content — hidden when collapsed -->
+                                        <template if:false={childGroup.isCollapsed}>
+                                            <template for:each={childGroup.options} for:item="option">
+                                                <c-custom-pcog-item
+                                                    key={option.id}
+                                                    item={option}
+                                                    is-api-in-progress={_isApiInProgress}
+                                                    onadditem={handleAddItem}
+                                                    onremoveitem={handleRemoveRow}
+                                                    onconfigure={handleConfigureRow}
+                                                    oneditproductname={handleEditProductName}
+                                                    onpurchasingoptionchange={handlePurchasingOptionChange}
+                                                    onquantitychange={handleQuantityChange}
+                                                    ontoggleexpand={handleToggleExpand}>
+                                                </c-custom-pcog-item>
+                                            </template>
+                                            <template if:true={childGroup.isEmpty}>
+                                                <div class="slds-align_absolute-center slds-p-around_medium">
+                                                    <p class="slds-text-color_weak">{childGroup.emptyStateMessage}</p>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+
+                        </div>
+                    </template>
+                </lightning-tab>
+            </template>
+        </lightning-tabset>
+    </template>
+
+    <!-- ACCORDION display mode -->
+    <template if:true={isAccordionView}>
+        <lightning-accordion
+            allow-multiple-sections-open
+            active-section-name={activeSections}
+        >
+            <template for:each={groups} for:item="group">
+                <lightning-accordion-section
+                    key={group.id}
+                    name={group.id}
+                    label={group.label}
+                >
+                    <div class="group-content">
+
+                        <!-- Case 1 & 2: direct options list belonging to this group -->
+                        <template if:false={group.isContainer}>
+
+                            <!-- Add button — visible only for Case 2 (classification groups) -->
+                            <template if:true={group.showAddButton}>
+                                <div class="group-actions slds-var-m-bottom_small">
+                                    <lightning-button
+                                        variant="neutral"
+                                        label={group.addButtonLabel}
+                                        title={group.addButtonLabel}
+                                        data-group-id={group.id}
+                                        class="slds-var-m-right_x-small"
+                                        onclick={handleShowModal}>
+                                    </lightning-button>
+                                </div>
+                                <template if:true={showModal}>
+                                    <c-custom-pcog-modal
+                                        products={modalProducts}
+                                        onclosemodal={handleCloseModal}
+                                        onadditems={handleAddItems}>
+                                    </c-custom-pcog-modal>
+                                </template>
+                            </template>
+
+                            <!-- Option items list -->
+                            <template for:each={group.options} for:item="option">
+                                <c-custom-pcog-item
+                                    key={option.id}
+                                    item={option}
+                                    is-api-in-progress={_isApiInProgress}
+                                    onadditem={handleAddItem}
+                                    onremoveitem={handleRemoveRow}
+                                    onconfigure={handleConfigureRow}
+                                    oneditproductname={handleEditProductName}
+                                    onpurchasingoptionchange={handlePurchasingOptionChange}
+                                    onquantitychange={handleQuantityChange}
+                                    ontoggleexpand={handleToggleExpand}>
+                                </c-custom-pcog-item>
+                            </template>
+
+                            <!-- Empty state when the group has no options yet -->
+                            <template if:true={group.isEmpty}>
+                                <div class="slds-align_absolute-center slds-p-around_medium">
+                                    <p class="slds-text-color_weak">{group.emptyStateMessage}</p>
+                                </div>
+                            </template>
+
+                        </template>
+
+                        <!-- Case 3: container group — renders each child simple group
+                             with its own collapsible sub-header and options list. -->
+                        <template if:true={group.isContainer}>
+                            <template for:each={group.childGroups} for:item="childGroup">
+                                <div key={childGroup.id} class="child-group-section slds-var-m-bottom_medium">
+                                    <!-- Collapsible child group header -->
+                                    <div class="child-group-header slds-var-m-bottom_small"
+                                         data-group-id={childGroup.id}
+                                         onclick={handleToggleChildGroup}>
+                                        <lightning-icon
+                                            icon-name={childGroup.toggleIcon}
+                                            size="x-small"
+                                            class="child-group-toggle-icon">
+                                        </lightning-icon>
+                                        <h3 class="slds-text-heading_small child-group-label">
+                                            {childGroup.label}
+                                        </h3>
+                                    </div>
+                                    <!-- Child group content — hidden when collapsed -->
+                                    <template if:false={childGroup.isCollapsed}>
+                                        <template for:each={childGroup.options} for:item="option">
+                                            <c-custom-pcog-item
+                                                key={option.id}
+                                                item={option}
+                                                is-api-in-progress={_isApiInProgress}
+                                                onadditem={handleAddItem}
+                                                onremoveitem={handleRemoveRow}
+                                                onconfigure={handleConfigureRow}
+                                                oneditproductname={handleEditProductName}
+                                                onpurchasingoptionchange={handlePurchasingOptionChange}
+                                                onquantitychange={handleQuantityChange}
+                                                ontoggleexpand={handleToggleExpand}>
+                                            </c-custom-pcog-item>
+                                        </template>
+                                        <template if:true={childGroup.isEmpty}>
+                                            <div class="slds-align_absolute-center slds-p-around_medium">
+                                                <p class="slds-text-color_weak">{childGroup.emptyStateMessage}</p>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+
+                    </div>
+                </lightning-accordion-section>
+            </template>
+        </lightning-accordion>
+    </template>
+</template>

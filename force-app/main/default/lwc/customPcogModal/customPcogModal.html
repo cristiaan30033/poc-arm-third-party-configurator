@@ -1,0 +1,45 @@
+<template>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <h2 id="modal-heading" class="slds-modal__title slds-hyphenate">Browse and Add Item</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <div class="slds-m-bottom_medium">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <input type="text" class="slds-input" placeholder="Search products..." value={searchTerm} oninput={handleSearchInput} />
+                        </div>
+                    </div>
+                </div>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Product Code</th>
+                            <th scope="col">Product Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={filteredProducts} for:item="product">
+                            <tr key={product.id}>
+                                <td>
+                                    <div class="slds-form-element__control">
+                                        <input type="checkbox" value={product.id} onchange={handleRowSelect} class="slds-checkbox"/>
+                                    </div>
+                                </td>
+                                <td>{product.code}</td>
+                                <td>{product.name}</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            <footer class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick={handleCancel}>Cancel</button>
+                <button class="slds-button slds-button_brand" onclick={handleAdd} disabled={notHasSelection}>Add</button>
+            </footer>
+        </div>
+    </section>
+</template>

@@ -1,0 +1,130 @@
+<template>
+    <!--
+        customPcogItem
+        Renders a single product option row inside a configurator option group.
+        All user interactions are communicated to the parent via custom events.
+
+        Events dispatched:
+          - removerow          : checkbox unchecked  { detail: { productKey } }
+          - configure          : settings button click { detail: { item } }
+          - editproductname    : edit icon click       { detail: { itemId } }
+          - purchasingoptionchange : combobox change   { detail: { itemId, value } }
+          - quantitychange     : quantity input change { detail: { itemId, value } }
+          - toggleexpand       : chevron button click  { detail: { itemId } }
+    -->
+    <div class="slds-box slds-m-top_small slds-m-bottom_small option-row">
+
+        <!-- Product header compact row -->
+        <div class="slds-grid slds-grid_vertical-align-center option-header">
+
+            <!-- Checkbox selector -->
+            <div class="slds-col slds-grow-none option-selector">
+                <lightning-input
+                    type="checkbox"
+                    variant="label-hidden"
+                    label={item.name}
+                    checked={item.isSelected}
+                    disabled={isCheckboxDisabled}
+                    onchange={handleCheckboxChange}
+                >
+                </lightning-input>
+            </div>
+
+            <!-- Product name + inline edit icon -->
+            <div class="slds-col slds-grow option-name">
+                <span class="slds-truncate slds-text-body_regular slds-text-color_default option-name-text">
+                    {item.name}
+                </span>
+                <template if:true={item.isCustomProductNameEditable}>
+                    <lightning-button-icon
+                        icon-name="utility:edit"
+                        variant="bare"
+                        size="x-small"
+                        alternative-text="Edit product name"
+                        title="Edit"
+                        disabled={isControlsDisabled}
+                        onclick={handleEditProductNameClick}
+                    >
+                    </lightning-button-icon>
+                </template>
+            </div>
+
+            <!-- Purchasing option combobox -->
+            <div class="slds-col slds-grow-none option-psm">
+                <lightning-combobox
+                    variant="label-hidden"
+                    label="Purchasing Option"
+                    placeholder="Select Purchasing Option"
+                    options={item.purchasingOptions}
+                    value={item.selectedPurchasingOption}
+                    disabled={isControlsDisabled}
+                    onchange={handlePurchasingOptionChange}
+                >
+                </lightning-combobox>
+            </div>
+
+            <!-- Quantity input -->
+            <div class="slds-col slds-grow-none option-qty">
+                <lightning-input
+                    type="number"
+                    variant="label-hidden"
+                    label="Quantity"
+                    value={item.quantity}
+                    min="1"
+                    step="1"
+                    disabled={isQuantityDisabled}
+                    onchange={handleQuantityChange}
+                >
+                </lightning-input>
+            </div>
+
+            <!-- Total price -->
+            <div class="slds-col slds-grow-none option-price">
+                <template if:true={item.hasPrice}>
+                    <lightning-formatted-number
+                        value={item.totalPrice}
+                        format-style="currency"
+                        currency-code="USD"
+                        class="slds-truncate option-price-amount"
+                    >
+                    </lightning-formatted-number>
+                </template>
+            </div>
+
+            <!-- Configure button (settings icon) -->
+            <div class="slds-col slds-grow-none option-config">
+                <template if:true={item.isConfigurable}>
+                    <lightning-button-icon
+                        icon-name="utility:settings"
+                        variant="border"
+                        alternative-text="Configure"
+                        title="Configure"
+                        disabled={isControlsDisabled}
+                        onclick={handleConfigureClick}
+                    >
+                    </lightning-button-icon>
+                </template>
+            </div>
+
+            <!-- Expand / Collapse toggle button -->
+            <div class="slds-col slds-grow-none option-toggle">
+                <lightning-button-icon
+                    icon-name={item.toggleIcon}
+                    variant="bare"
+                    alternative-text="Collapse/Expand"
+                    title="Collapse/Expand"
+                    aria-expanded={item.isExpanded}
+                    onclick={handleToggleExpand}
+                >
+                </lightning-button-icon>
+            </div>
+        </div>
+
+        <!-- Product description (visible when item is expanded) -->
+        <template if:true={item.isExpanded}>
+            <div class="slds-p-horizontal_x-small slds-m-top_xx-small slds-text-color_weak option-description">
+                <p class="slds-text-body_small">{item.description}</p>
+            </div>
+        </template>
+    </div>
+</template>

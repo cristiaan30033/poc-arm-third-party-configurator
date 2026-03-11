@@ -1,0 +1,86 @@
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Custom Product Configurator Option Group</masterLabel>
+    <description>Custom component that I will use in the  Configurator UI</description>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <!-- INPUT PROPERTIES -->
+
+            <property
+                name="optionGroups"
+                type="apex://ProductConfig.OptionGroup[]"
+                label="Option Groups"
+                description="Enter the API name of a resource that contains a collection of ProductConfig__OptionGroup records that contain product option data to group by product category. See Salesforce help about configuring this component."
+                role="inputOnly" />
+
+            <property
+                name="isNonBlokingEnabled"
+                type="Boolean"
+                label="Non Blocking Enabled"
+                description="Enter the API name of a boolean resource that indicates whether Non Blocking is enabled."
+                role="inputOnly" />
+
+            <property
+                name="isApiInProgress"
+                type="Boolean"
+                label="Wait for API"
+                description="A Boolean value that indicates whether the API call is in progress."
+                role="inputOnly" />
+
+            <property
+                name="layoutMode"
+                type="String"
+                label="Layout Mode"
+                description="Enter a string value that specifies the layout mode of the Configurator UI, either Compact or Standard."
+                role="inputOnly" />
+
+            <property
+                name="searchResultOptionId"
+                type="String"
+                label="Search Result Option ID"
+                description="Enter the ID of the search option item that the user selects."
+                role="inputOnly" />
+
+            <property
+                name="currencyCode"
+                type="String"
+                label="Currency Code"
+                description="Enter the API name of a resource that contains the currency code to use for the transaction. See Salesforce help about configuring this component."
+                role="inputOnly" />
+
+            <property
+                name="optionGroupsDisplayStyle"
+                type="String"
+                label="Option Groups Display Style"
+                description="Specify how to display option groups. Valid values are accordions or tabs."
+                role="inputOnly" />
+
+            <property
+                name="isDesignTime"
+                type="Boolean"
+                label="Preview Mode"
+                description="A Boolean value that indicates whether a product or product classification record was viewed in preview mode."
+                role="inputOnly" />
+
+            <property
+                name="salesTransactionItems"
+                type="apex://ProductConfig.SalesTransactionItem[]"
+                label="Sales Transaction Items"
+                description="A collection of Apex ProductConfig__SalesTransactionItem records that contain sales transaction item details."
+                role="inputOnly" />
+            
+            <property 
+                name="configuratorContext" 
+                type="apex://ProductConfig.ConfiguratorContext" 
+                description="ProductConfig__ConfiguratorContext" 
+                label="Configurator Context" 
+                default="{}"/>
+
+
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

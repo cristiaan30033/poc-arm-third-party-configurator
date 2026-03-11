@@ -1,0 +1,47 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+}
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #222;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    z-index: 1001;
+    min-width: 600px;
+    max-width: 90vw;
+}
+.modal-header {
+    padding: 1rem;
+    border-bottom: 1px solid #444;
+}
+.modal-body {
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.product-table th, .product-table td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #333;
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #444;
+}
+button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

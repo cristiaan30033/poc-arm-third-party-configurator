@@ -1,0 +1,78 @@
+/*
+ * customPcogItem Styles
+ * Option row styles extracted from customProdConfigOptionGroup.
+ * The :host selector scopes all rules to this component's shadow DOM.
+ */
+
+/* ---- Option row container ---- */
+.option-row {
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    border: 1px solid var(--lwc-colorBorder, #dddbda);
+}
+
+/* ---- Product header compact row ---- */
+.option-header {
+    padding: 0.5rem 0.75rem;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+}
+
+/* ---- Checkbox selector column ---- */
+.option-selector {
+    flex: 0 0 auto;
+}
+
+/* ---- Product name column ---- */
+.option-name {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.option-name-text {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---- Purchasing option combobox column ---- */
+.option-psm {
+    flex: 0 0 auto;
+    min-width: 10rem;
+    max-width: 14rem;
+}
+
+/* ---- Quantity input column ---- */
+.option-qty {
+    flex: 0 0 auto;
+    width: 4.5rem;
+}
+
+/* ---- Price column ---- */
+.option-price {
+    flex: 0 0 auto;
+    min-width: 5rem;
+    text-align: right;
+}
+
+.option-price-amount {
+    font-weight: 700;
+    color: var(--lwc-colorTextDefault, #080707);
+}
+
+/* ---- Configure and toggle buttons ---- */
+.option-config,
+.option-toggle {
+    flex: 0 0 auto;
+}
+
+/* ---- Description (expanded state) ---- */
+.option-description {
+    padding-bottom: 0.5rem;
+    font-style: italic;
+    border-top: 1px solid var(--lwc-colorBorderSeparator, #e0e5ee);
+    margin-top: 0.25rem;
+}
