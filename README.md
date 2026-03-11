@@ -103,15 +103,15 @@ The Business APIs are the backbone of any custom configurator implementation. Th
 
 | Method | Resource | What it does |
 |:---:|---|---|
-| `POST` | `/configure` | Initializes a new configuration session |
-| `POST` | `/loadInstance` | Loads existing config state into the session |
-| `GET` | `/getInstance` | Reads current session state (full tree) |
-| `POST` | `/setInstance` | Replaces the full session state |
-| `POST` | `/saveInstance` | Persists session state to Salesforce objects |
-| `POST` | `/setProductQuantity` | Updates quantity for a specific node |
-| `POST` | `/addNodes` | Adds one or more product nodes to the tree |
-| `POST` | `/updateNodes` | Updates attributes/options on existing nodes |
-| `DELETE` | `/deleteNodes` | Removes one or more nodes from the tree |
+| `POST` | `/configure (POST /connect/cpq/configurator/actions/configure)` | Retrieve and update a product’s configuration from a configurator. Execute configuration rules and notify users of any violations for changes to product bundle, attributes, or product quantity within a bundle. Additionally, get pricing details for the configured bundle. |
+| `POST` | `/loadInstance (POST /connect/cpq/configurator/actions/load-instance)` | Create a session for the product configuration instance using the transaction ID. Get the session ID that includes the results of actions, such as configuration rules, qualification rules, and pricing management. |
+| `GET` | `/getInstance (GET /connect/cpq/configurator/actions/get-instance)` | Fetch the JSON representation of a product configuration. Use the response to display the details of the product configuration instance on the Salesforce user interface, or save the product configuration instance to an external system.|
+| `POST` | `/setInstance (POST /connect/cpq/configurator/actions/set-instance)` | Set a product configuration instance. This API is used in scenarios where the configuration instance is available in a different database than Salesforce and the product catalog management data is in Salesforce. |
+| `POST` | `/saveInstance (POST /connect/cpq/configurator/actions/save-instance)` | Save a configuration instance after a successful product configuration. |
+| `POST` | `/setProductQuantity (POST /connect/cpq/configurator/actions/set-product-quantity)` | Set the quantity of a product through the runtime system. |
+| `POST` | `/addNodes (POST /connect/cpq/configurator/actions/add-nodes)` | Add a node to the context through the runtime system without using the Salesforce user interface. |
+| `POST` | `/updateNodes (POST /connect/cpq/configurator/actions/update-nodes)` | Update nodes in a product configuration. |
+| `DELETE` | `/deleteNodes (DELETE /connect/cpq/configurator/actions/delete-nodes)` | Delete nodes from a product configuration. |
 
 For this PoC, the two most important operations are `addNodes` (user selects a product from the classification picker) and `deleteNodes` (user unchecks a product). Let's look at both in detail.
 
@@ -120,16 +120,56 @@ For this PoC, the two most important operations are `addNodes` (user selects a p
 When a user checks a product in the classification modal and clicks Add, the component calls `addNodes`. The payload structure looks like this:
 
 ```json
-// POST /services/apexrest/commerce/ui/v1/products/configuration/addNodes
+// POST /connect/cpq/configurator/actions/add-nodes
 {
-  "instanceId": "<configuratorInstanceId>",
-  "nodes": [
+  "configuratorOptions": {
+    "executePricing": true,
+    "returnProductCatalogData": true,
+    "qualifyAllProductsInTransaction": true,
+    "validateProductCatalog": true,
+    "validateAmendRenewCancel": true,
+    "executeConfigurationRules": true,
+    "addDefaultConfiguration": true
+  },
+  "qualificationContext": {
+    "accountId": "001xx0000000001AAA",
+    "contactId": "003xx00000000D7AAI"
+  },
+  "contextId": "008d27d7-e004-4906-a949-ee7d7c323c77",
+  "addedNodes": [
     {
-      "externalId": "custom-ext-id-001",
-      "productId": "01t...",
-      "parentNodeId": "<parent-node-id>",
-      "quantity": 1,
-      "purchaseTerm": "Monthly"
+      "path": [
+        "0Q0xx0000004EvcCAE",
+        "ref_d3a3f8d2_e031_4517_ae28_69ce16cb6589"
+      ],
+      "addedObject": {
+        "id": "ref_d3a3f8d2_e031_4517_ae28_69ce16cb6589",
+        "SalesTransactionItemSource": "ref_d3a3f8d2_e031_4517_ae28_69ce16cb6589",
+        "SalesTransactionItemParent": "0Q0xx0000004EvcCAE",
+        "PricebookEntry": "01uxx00000090VuAAI",
+        "ProductSellingModel": "0jPxx00000001KHEAY",
+        "UnitPrice": 15.26,
+        "Quantity": 1,
+        "Product": "01txx0000006lfHAAQ",
+        "businessObjectType": "QuoteLineItem"
+      }
+    },
+    {
+      "path": [
+        "0Q0xx0000004EvcCAE",
+        "ref_d3a3f8d2_e031_4517_ae28_69ce16cb6589",
+        "ref_d85b036d_d305_4bb6_aba8_a1dff645a664"
+      ],
+      "addedObject": {
+        "id": "ref_d85b036d_d305_4bb6_aba8_a1dff645a664",
+        "MainItem": "0QLxx0000004QdRGAU",
+        "AssociatedItem": "ref_d3a3f8d2_e031_4517_ae28_69ce16cb6589",
+        "ProductRelatedComponent": "0dSxx00000001p6EAA",
+        "ProductRelationshipType": null,
+        "AssociatedItemPricing": "NotIncludedInBundlePrice",
+        "AssociatedQuantScaleMethod": "Proportional",
+        "businessObjectType": "QuoteLineRelationship"
+      }
     }
   ]
 }
@@ -142,10 +182,27 @@ The API returns the updated tree. The `instanceId` stays constant throughout the
 When a user unchecks a product row (checkbox `change` event fires `removeitem`), the component calls `deleteNodes`:
 
 ```json
-// DELETE /services/apexrest/commerce/ui/v1/products/configuration/deleteNodes
+// DELETE /connect/cpq/configurator/actions/delete-nodes
 {
-  "instanceId": "<configuratorInstanceId>",
-  "nodeIds": ["<node-id-to-remove>"]
+    "configuratorOptions": {
+        "executePricing": true,
+        "returnProductCatalogData": true,
+        "qualifyAllProductsInTransaction": true,
+        "validateProductCatalog": true,
+        "validateAmendRenewCancel": true,
+        "executeConfigurationRules": true,
+        "addDefaultConfiguration": true
+    },
+    "qualificationContext": {
+        "accountId": "001xx0000000001AAA",
+        "contactId": "003xx00000000D7AAI"
+    },
+    "contextId": "008d27d7-e004-4906-a949-ee7d7c323c77",
+    "deletedNodes": [
+        {
+            "path": ["0Q0DE000000ISHJs81", "0QLDE000000IBXw4AO"]
+        }
+    ]
 }
 ```
 
