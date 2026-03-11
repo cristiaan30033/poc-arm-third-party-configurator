@@ -359,11 +359,11 @@ Start with the minimal footprint: clone the default flow, replace only the compo
 
 ## 📚 References
 
-- 🔗 Salesforce Docs — [Product Configurator Business APIs Overview](#) 
-- 🔗 Salesforce Docs — [Third-Party Configurator](#)
-- 🔗 Trailhead — [Create and Configure a Product Configurator Flow](#)
-- 🔗 Salesforce Help — [Product Configuration Limits](#)
-- 🔗 LWC Developer Guide — [`lightning__FlowScreen` Target](#)
+- 🔗 Salesforce Docs — [Product Configurator Business APIs Overview](https://developer.salesforce.com/docs/atlas.en-us.revenue_lifecycle_management_dev_guide.meta/revenue_lifecycle_management_dev_guide/product_configurator_business_api_overview.htm) 
+- 🔗 Salesforce Docs — [Third-Party Configurator](https://help.salesforce.com/s/articleView?language=en_US&id=ind.product_configurator_third_party_configurator.htm&type=5)
+- 🔗 Trailhead — [Create and Configure a Product Configurator Flow](https://trailhead.salesforce.com/es/content/learn/modules/product-configuration-with-revenue-cloud/create-and-configure-a-product-configurator-flow)
+- 🔗 Salesforce Help — [Product Configuration Limits](https://help.salesforce.com/s/articleView?language=en_US&id=ind.product_configurator_limits.htm&type=5)
+- 🔗 LWC Developer Guide — [`lightning__FlowScreen` Target](https://developer.salesforce.com/docs/platform/lwc/guide/targets-lightning-flow-screen.html)
 
 <br/>
 
