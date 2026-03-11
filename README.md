@@ -16,6 +16,11 @@ Consider a product bundle called **"Starlink Utils Products"** (product code: `S
 - 🗂️ **Other Group** — a container group. Contains product groups with nested subgroups (Misc Tech, Misc2 Alternative).
 - 🏷️ **Starlink Utils CG** — a classification group. Contains a product classification (a dynamic set of products driven by a product classification record).
 
+![image1](media/image1.png)
+![image2](media/image2.png)
+![image3](media/image3.png)
+![image4](media/image4.png)
+
 The **classification group** is where the default configurator starts to show its limits. When a user opens the configurator and navigates to a classification group, Salesforce renders a modal-style picker showing available products.
 
 ### 📉 Limitations of the Default UI:
@@ -23,7 +28,11 @@ The **classification group** is where the default configurator starts to show it
 - **Fixed columns**: Product Name, Price, and Instances — *not configurable from the UI*.
 - **No way to expose additional fields** like Product Code, custom attributes, or SKU identifiers.
 
-The business requirement was clear: sales reps need to search by both **product name** and **product code (SKU)**, and the table should display **Product Code** alongside **Product Name** — dropping the Price and Instances columns that don't add value in this context.
+![image5](media/image5.png)
+
+The business requirement: sales reps need to search by both **product name** and **product code (SKU)**, and the table should display **Product Code** alongside **Product Name** — dropping the Price and Instances columns that don't add value in this context.
+
+![image7](media/image7.png)
 
 > [!WARNING]
 > **Why you can't just configure this away**
@@ -40,6 +49,7 @@ ARM offers two complementary extensibility mechanisms for the configurator layer
 2. **Product Configurator Business APIs** — a set of headless Connect REST APIs that act as a stateful process orchestrator for the configuration session: loading state, mutating the configuration tree (add/update/delete nodes), and saving the final result.
 
 In this scenario, the chosen approach is to create a **Custom Product Configurator Flow** that replaces *only* the option group screen component — keeping all other standard components (Data Manager, Header, Attributes Panel, Transaction Header, Summary, Footer) intact, and injecting a single custom LWC FlowScreen: `customProdConfigOptionGroup`.
+
 
 This custom component talks directly to the Product Configurator Business APIs for all state mutations — it never writes directly to Salesforce objects. The configuration session is managed server-side through the API's instance state machine.
 
@@ -67,6 +77,8 @@ Before writing a single line of LWC code, there are three setup steps that must 
 4. In your cloned flow, open the main screen element (`S01_ProductConfiguratorUI`).
 5. Remove the default **"Product Configurator Option Groups"** (`S01_OptionGroups`) component.
 6. Drag your custom LWC component (`CustomProdConfigOptionGroup`) into the screen and wire the required flow variables.
+
+![image6](media/image6.png)
 
 > [!TIP]
 > **Flow variable wiring**
