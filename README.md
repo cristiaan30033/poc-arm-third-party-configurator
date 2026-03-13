@@ -111,7 +111,7 @@ The Business APIs are the backbone of any custom configurator implementation. Th
 | `POST` | `/setProductQuantity (POST /connect/cpq/configurator/actions/set-product-quantity)` | Set the quantity of a product through the runtime system. |
 | `POST` | `/addNodes (POST /connect/cpq/configurator/actions/add-nodes)` | Add a node to the context through the runtime system without using the Salesforce user interface. |
 | `POST` | `/updateNodes (POST /connect/cpq/configurator/actions/update-nodes)` | Update nodes in a product configuration. |
-| `DELETE` | `/deleteNodes (DELETE /connect/cpq/configurator/actions/delete-nodes)` | Delete nodes from a product configuration. |
+| `POST` | `/deleteNodes (DELETE /connect/cpq/configurator/actions/delete-nodes)` | Delete nodes from a product configuration. |
 
 For this PoC, the two most important operations are `addNodes` (user selects a product from the classification picker) and `deleteNodes` (user unchecks a product). Let's look at both in detail.
 
