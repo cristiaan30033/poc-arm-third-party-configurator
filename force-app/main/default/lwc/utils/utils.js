@@ -9,7 +9,7 @@
 // Usage:
 //   import { ClassificationNodeBuilder } from 'c/utils';
 //
-//   const added   = ClassificationNodeBuilder.addedNodes(selectedProducts, pricebookEntries, groupClassification, this._configuratorContext);
+//   const added   = ClassificationNodeBuilder.addedNodes(selectedProducts, pricebookEntries, prcId, prcQuantityScaledMethod, this._configuratorContext);
 //   const deleted = ClassificationNodeBuilder.deletedNodes(itemsToDelete); // ClassificationNodeBuilder.deletedNodes([{ key: 'xxx', path: [txId, itemId] }]);
 //   const updated = ClassificationNodeBuilder.updatedNodes(itemUpdates); // ClassificationNodeBuilder.updatedNodes([{ key: 'xxx', path: [txId, itemId], fields: { Quantity: 3 } }]);
 // ============================================================================
